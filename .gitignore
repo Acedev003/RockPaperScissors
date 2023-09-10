@@ -1,0 +1,6 @@
+env
+*.txt
+models/hand_landmarker.task
+misc
+data/*
+!data/rps_1694347225.5854254.csv
