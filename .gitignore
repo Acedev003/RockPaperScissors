@@ -3,4 +3,4 @@ env
 models/hand_landmarker.task
 misc
 data/*
-!data/rps_1694347225.5854254.csv
+!data/rps_1694359904.9626915.csv

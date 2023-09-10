@@ -107,7 +107,7 @@ def main():
         result_points = []
         for result in result.hand_landmarks:
             for landmark in result:
-                result_points.append((int(landmark.x*FRAME_WIDTH),int(landmark.y*FRAME_HEIGHT)))
+                result_points.append((landmark.x,landmark.y))
     
     cap = cv2.VideoCapture(0)
     
@@ -123,24 +123,24 @@ def main():
         
         if event == "rock" and len(result_points)>0:
             for i in range(0,len(result_points)*2,2):
-                data[list(data.keys())[i]].append(result_points[i//2][0]/FRAME_WIDTH)
-                data[list(data.keys())[i+1]].append(result_points[i//2][1]/FRAME_HEIGHT)
+                data[list(data.keys())[i]].append(result_points[i//2][0])
+                data[list(data.keys())[i+1]].append(result_points[i//2][1])
             
             data["CLASS"].append(CLASS_ROCK)
             rock_count+=1
         
         if event == "paper" and len(result_points)>0:
             for i in range(0,len(result_points)*2,2):
-                data[list(data.keys())[i]].append(result_points[i//2][0]/FRAME_WIDTH)
-                data[list(data.keys())[i+1]].append(result_points[i//2][1]/FRAME_HEIGHT)
+                data[list(data.keys())[i]].append(result_points[i//2][0])
+                data[list(data.keys())[i+1]].append(result_points[i//2][1])
             
             data["CLASS"].append(CLASS_PAPER)
             paper_count+=1
             
         if event == "scissors" and len(result_points)>0:
             for i in range(0,len(result_points)*2,2):
-                data[list(data.keys())[i]].append(result_points[i//2][0]/FRAME_WIDTH)
-                data[list(data.keys())[i+1]].append(result_points[i//2][1]/FRAME_HEIGHT)
+                data[list(data.keys())[i]].append(result_points[i//2][0])
+                data[list(data.keys())[i+1]].append(result_points[i//2][1])
             
             data["CLASS"].append(CLASS_SCISSORS)
             scissors_count+=1
@@ -166,7 +166,7 @@ def main():
         detector.detect_async(mp_frame,int(time.time()*1000))
         
         for point in result_points:
-            frame = cv2.circle(frame,point,3,(0,200,0),thickness=3)
+            frame = cv2.circle(frame,(int(point[0]*FRAME_WIDTH),int(point[1]*FRAME_HEIGHT)),3,(0,200,0),thickness=3)
         
         imgbytes = cv2.imencode('.png', frame)[1].tobytes()
         
