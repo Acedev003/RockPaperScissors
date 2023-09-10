@@ -149,7 +149,7 @@ def main():
             save_path =  f'{DATA_SAVE_FOLDER}/rps_{time.time()}.csv'
             
             df = pd.DataFrame(data)
-            df.to_csv(save_path)
+            df.to_csv(save_path,index=False)
             gui.popup_ok(f"Saved into {save_path}",title="Info")
         
         _ , frame    = cap.read()
