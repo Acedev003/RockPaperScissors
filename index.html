@@ -11,8 +11,8 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
     <link rel="icon" type="image/x-icon" href="https://acedev003.github.io/assets/images/favicon.ico">
 
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/vision_bundle.js" crossorigin="anonymous"
-        type="module"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/vision_bundle.js" crossorigin="anonymous" type="module"></script>
+    <script src="/models/model.js"></script>
 
 
     <style>
@@ -138,22 +138,37 @@
         img.crossOrigin = 'anonymous';
 
         const handLandmarkerResult = handLandmarker.detectForVideo(video,performance.now());
-        console.log(handLandmarkerResult.landmarks)
+        let features = Array();
+        if (handLandmarkerResult.landmarks[0].length < 1) { return; }
+        handLandmarkerResult.landmarks[0].forEach(landmark => { features.push(landmark.x,landmark.y) });
+        
+        let result = predict_rps(
+                          features[0], features[1], features[2], features[3], features[4],
+                          features[5], features[6], features[7], features[8], features[9],
+                          features[10], features[11], features[12], features[13], features[14],
+                          features[15], features[16], features[17], features[18], features[19],
+                          features[20], features[21], features[22], features[23], features[24],
+                          features[25], features[26], features[27], features[28], features[29],
+                          features[30], features[31], features[32], features[33], features[34],
+                          features[35], features[36], features[37], features[38], features[39],
+                          features[40], features[41], features[42]
+                    );
 
+        console.log(result);
     };
 
     let clicked = false;
     start.onclick = () => {
         if (clicked) {return}
         setTimeout(() =>{
-            rock.style.boxShadow = '0 2px 5px 0 rgba(121, 191, 36, 0.56), 0 2px 10px 0 rgba(121, 191, 36, 0.12)';
+            rock.style.boxShadow = '0 2px 5px 0 rgba(121, 191, 36, 0.56), 0 2px 10px 0 rgba(121, 191, 36, 0.22)';
             clicked = true;
             setTimeout(() =>{
                 rock.style.boxShadow = '';
-                paper.style.boxShadow = '0 2px 5px 0 rgba(121, 191, 36, 0.56), 0 2px 10px 0 rgba(121, 191, 36, 0.12)';
+                paper.style.boxShadow = '0 2px 5px 0 rgba(121, 191, 36, 0.56), 0 2px 10px 0 rgba(121, 191, 36, 0.22)';
                 setTimeout(()=>{
                     paper.style.boxShadow = '';
-                    scissors.style.boxShadow = '0 2px 5px 0 rgba(121, 191, 36, 0.56), 0 2px 10px 0 rgba(121, 191, 36, 0.12)';
+                    scissors.style.boxShadow = '0 2px 5px 0 rgba(121, 191, 36, 0.56), 0 2px 10px 0 rgba(121, 191, 36, 0.22)';
                     setTimeout(()=>{
                         scissors.style.boxShadow = 'none';
                         get_and_predict();
