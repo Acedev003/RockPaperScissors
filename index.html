@@ -14,7 +14,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/vision_bundle.js" crossorigin="anonymous" type="module"></script>
     <script src="/models/model.js"></script>
 
-
     <style>
         html,
         body {
@@ -62,14 +61,14 @@
         </div>
 
         <div class="w3-container w3-half w3-center">
-            <div class="w3-card-2 w3-margin" style="height: 100%;max-width:400px;float:left">
-                <img class="w3-image" src="/assets/bot.png" style="max-width: 320px;height:320px">
+            <div class="w3-card-2 w3-margin" style="height: 320px;width:320px;float:left">
+                <img class="w3-image" id="comp_state_view" src="/assets/bot.png" style="max-width: 320px;height:220px;margin:auto">
             </div>
         </div>
         <div class="w3-row w3-center w3-xxlarge w3-text-white">
-            <span>0</span>
+            <span id="human_score">0</span>
             <span>-</span>
-            <span>0</span>
+            <span id="computer_score">0</span>
         </div>
         <div class="w3-row w3-margin w3-padding w3-center w3-large w3-text-gray">
             <button class="w3-button" id="start">Start</button>
@@ -90,8 +89,11 @@
     let paper        = document.getElementById('paper');
     let scissors     = document.getElementById('scissors');
     
+    let h_score_span   = document.getElementById('human_score');
+    let c_score_span   = document.getElementById('computer_score');
+    
     let handLandmarker = undefined;
-    let runningMode = "VIDEO";
+    let runningMode    = "VIDEO";
 
     let score_human    = 0;
     let score_computer = 0;
@@ -125,24 +127,69 @@
 
     createHandLandmarker();
 
-    let get_and_predict = () =>{
-        let canvas = document.createElement('canvas');
+    let predict_and_setscore = (human_choice,computer_choice) => {
+        let rock_val    = 0;
+        let paper_val   = 1;
+        let scissor_val = 2;
+
+        let winner = null;
+
+        let comp_image_map = [
+                                "/assets/rock.png",
+                                "/assets/paper.png",
+                                "/assets/scissors.png",
+                             ]
+
+        document.getElementById('comp_state_view').src = comp_image_map[computer_choice];
+
+        if (human_choice==rock_val)
+        {
+            if(computer_choice==rock_val)    winner = null;
+            if(computer_choice==paper_val)   winner = "computer";
+            if(computer_choice==scissor_val) winner = "human";
+        }
+        else if (human_choice==paper_val)
+        {
+            if(computer_choice==rock_val)    winner = "human";
+            if(computer_choice==paper_val)   winner = null;
+            if(computer_choice==scissor_val) winner = "computer";
+        }
+        else if (human_choice==scissor_val)
+        {
+            if(computer_choice==rock_val)    winner = "computer";
+            if(computer_choice==paper_val)   winner = "human"
+            if(computer_choice==scissor_val) winner = null;
+        }
         
-        canvas.height = video.videoHeight;
-        canvas.width  = video.videoWidth;
+        if(winner=="human")
+        {
+            score_human+=1;
+            h_score_span.innerText = score_human;
+        }
+        else if(winner=="computer")
+        {
+            score_computer+=1;
+            c_score_span.innerText = score_computer;
+        }
+        else
+        {
+            alert('Draw');
+        }
 
-        let ctx = canvas.getContext('2d');
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        let img = new Image();
-        img.src = canvas.toDataURL();
-        img.crossOrigin = 'anonymous';
+    };
 
+    let get_and_predict = () => {
         const handLandmarkerResult = handLandmarker.detectForVideo(video,performance.now());
         let features = Array();
+
+        if(handLandmarkerResult.landmarks[0] == undefined) {
+            alert('Didnt detect any hands. . .');
+            return;
+        }
         if (handLandmarkerResult.landmarks[0].length < 1) { return; }
         handLandmarkerResult.landmarks[0].forEach(landmark => { features.push(landmark.x,landmark.y) });
         
-        let result = predict_rps(
+        let human_choice = predict_rps(
                           features[0], features[1], features[2], features[3], features[4],
                           features[5], features[6], features[7], features[8], features[9],
                           features[10], features[11], features[12], features[13], features[14],
@@ -154,12 +201,15 @@
                           features[40], features[41], features[42]
                     );
 
-        console.log(result);
+        let computer_choice = Math.floor(3*Math.random());
+        predict_and_setscore(human_choice,computer_choice);
+        
     };
 
     let clicked = false;
     start.onclick = () => {
         if (clicked) {return}
+        document.getElementById('comp_state_view').src = '/assets/bot.png';
         setTimeout(() =>{
             rock.style.boxShadow = '0 2px 5px 0 rgba(121, 191, 36, 0.56), 0 2px 10px 0 rgba(121, 191, 36, 0.22)';
             clicked = true;
@@ -173,10 +223,10 @@
                         scissors.style.boxShadow = 'none';
                         get_and_predict();
                         clicked = false;
-                    }, 1 * 1000);
-                },1 * 1000);
-            }, 1 * 1000);
-        }, 1 * 1000);
+                    }, 0.7 * 1000);
+                },0.7 * 1000);
+            }, 0.7 * 1000);
+        }, 0.7 * 1000);
     };
 
 </script>
