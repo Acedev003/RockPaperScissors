@@ -12,7 +12,7 @@
     <link rel="icon" type="image/x-icon" href="https://acedev003.github.io/assets/images/favicon.ico">
 
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/vision_bundle.js" crossorigin="anonymous" type="module"></script>
-    <script src="/models/model.js"></script>
+    <script src="/RockPaperScissors/models/model.js"></script>
 
     <style>
         html,
@@ -40,7 +40,7 @@
     <div id="alert_modal" class="w3-modal" style="display:block">
         <div class="w3-modal-content w3-transparent">
             <div class="w3-container w3-center">
-                <img src="/assets/warning.png" class="w3-image" style="max-height: 120px;">
+                <img src="/RockPaperScissors/assets/warning.png" class="w3-image" style="max-height: 120px;">
                 <div class="w3-text-white w3-xlarge">
                     Loading AI . .
                 </div>
@@ -62,7 +62,7 @@
 
         <div class="w3-container w3-half w3-center">
             <div class="w3-card-2 w3-margin" style="height: 320px;width:320px;float:left">
-                <img class="w3-image" id="comp_state_view" src="/assets/bot.png" style="max-width: 320px;height:220px;margin:auto">
+                <img class="w3-image" id="comp_state_view" src="/RockPaperScissors/assets/bot.png" style="max-width: 320px;height:220px;margin:auto">
             </div>
         </div>
         <div class="w3-row w3-center w3-xxlarge w3-text-white">
@@ -135,9 +135,9 @@
         let winner = null;
 
         let comp_image_map = [
-                                "/assets/rock.png",
-                                "/assets/paper.png",
-                                "/assets/scissors.png",
+                                "/RockPaperScissors/assets/rock.png",
+                                "/RockPaperScissors/assets/paper.png",
+                                "/RockPaperScissors/assets/scissors.png",
                              ]
 
         document.getElementById('comp_state_view').src = comp_image_map[computer_choice];
@@ -209,7 +209,7 @@
     let clicked = false;
     start.onclick = () => {
         if (clicked) {return}
-        document.getElementById('comp_state_view').src = '/assets/bot.png';
+        document.getElementById('comp_state_view').src = "/RockPaperScissors/assets/bot.png";
         setTimeout(() =>{
             rock.style.boxShadow = '0 2px 5px 0 rgba(121, 191, 36, 0.56), 0 2px 10px 0 rgba(121, 191, 36, 0.22)';
             clicked = true;
