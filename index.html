@@ -9,6 +9,7 @@
     <title>Rock Paper Scissors</title>
     <link rel="stylesheet" href="https://acedev003.github.io/assets/css/w3.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="icon" type="image/x-icon" href="https://acedev003.github.io/assets/images/favicon.ico">
 
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/vision_bundle.js" crossorigin="anonymous" type="module"></script>
@@ -25,6 +26,16 @@
             width: 320px;
         }
 
+        .w3-hover-custom1:hover{
+            color:#fff!important;
+            background-color:#79bf241c!important
+        }
+
+        .w3-hover-custom2:hover{
+            color:#fff!important;
+            background-color:#79bf241c!important
+        }
+        
         .w3-card,
         .w3-card-2 {
             box-shadow: 0 2px 5px 0 rgba(121, 191, 36, 0.16), 0 2px 10px 0 rgba(121, 191, 36, 0.12);
@@ -48,6 +59,17 @@
         </div>
     </div>
 
+    <div id="settings_modal" class="w3-modal">
+        <div class="w3-modal-content">
+          <div class="w3-container">
+            <span onclick="document.getElementById('settings_modal').style.display='none'" class="w3-button w3-display-topright">&times;</span>
+            <p>Settings</p>
+            <p>Min Hand Detection confidence : <input type="range" id="mhd" min="0" max="1" step="0.01"></p>
+            <p>Min Hand Presence &nbsp;confidence : <input type="range" id="mhp" min="0" max="1" step="0.01"></p>
+          </div>
+        </div>
+    </div>
+
     <div class="w3-container w3-center w3-xxxlarge w3-padding-16" style="color: #81BF24;">
         <span id="rock" class="test">Rock</span> <span id="paper">Paper</span> <span id="scissors">Scissors</span>
     </div>
@@ -57,7 +79,9 @@
         <div class="w3-container w3-half">
             <div class="w3-card-2 w3-padding w3-margin w3-center" style="height: 320px;max-width:400px;float:right">
                 <video autoplay="true" id="cam_feed" style="height: 224px;" class="w3-margin"></video>
-                <div><span id="cam_pred_state" class="w3-text-white"> - Prediction - </span></div>
+                <div  class="w3-text-white">
+                    <span id="cam_pred_state"> - Prediction - </span>
+                </div>
             </div>
         </div>
 
@@ -72,7 +96,10 @@
             <span id="computer_score">0</span>
         </div>
         <div class="w3-row w3-margin w3-padding w3-center w3-large w3-text-gray">
-            <button class="w3-button" id="start">Play</button>
+            <button class="w3-button w3-hover-custom1" id="start"> Play </button>
+            <button class="w3-button w3-ripple w3-circle w3-hover-custom2" id="settings" style="height: 43px;width:43px;">
+                <i class="fa fa-cog" style="width:15px;height:15px;position:relative;left:-2px"></i>
+            </button>
         </div>
     </div>
 </body>
@@ -90,6 +117,9 @@
     let paper        = document.getElementById('paper');
     let scissors     = document.getElementById('scissors');
     let cam_pred     = document.getElementById('cam_pred_state');
+    let settings     = document.getElementById('settings');
+    let mhd          = document.getElementById('mhd');
+    let mhp          = document.getElementById('mhp');
     
     let h_score_span   = document.getElementById('human_score');
     let c_score_span   = document.getElementById('computer_score');
@@ -100,6 +130,24 @@
     let score_human    = 0;
     let score_computer = 0;
 
+    let mhd_val = 0.4;
+    let mhp_val = 0.4;
+
+    settings.onclick = () => {
+        document.getElementById('settings_modal').style.display = 'block';
+    };
+
+    mhd.value = mhd_val;
+    mhp.value = mhp_val;
+
+    mhd.onchange = () => {
+        mhd_val = mhd.value;
+    };
+
+    mhp.onchange = () => {
+        mhp_val = mhp.value;
+    };
+
     if (navigator.mediaDevices.getUserMedia) 
     {
         navigator.mediaDevices.getUserMedia({ video: true })
@@ -107,7 +155,7 @@
                 video.srcObject = stream;
             })
             .catch(function (error) {
-                console.log("Something went wrong!");
+                console.log("Failed to set video stream . . .");
             });
     }
 
@@ -123,8 +171,8 @@
             },
             runningMode: runningMode,
             numHands: 1,
-            minHandDetectionConfidence : 0.4,
-            minHandPresenceConfidence : 0.4
+            minHandDetectionConfidence : mhd_val,
+            minHandPresenceConfidence : mhp_val
         });
         loading_warn.style.display = 'none';
     };
