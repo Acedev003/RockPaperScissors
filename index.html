@@ -12,7 +12,7 @@
     <link rel="icon" type="image/x-icon" href="https://acedev003.github.io/assets/images/favicon.ico">
 
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/vision_bundle.js" crossorigin="anonymous" type="module"></script>
-    <script src="/RockPaperScissors/models/model.js"></script>
+    <script src="https://acedev003.github.io/RockPaperScissors/models/model.js"></script>
 
     <style>
         html,
@@ -40,7 +40,7 @@
     <div id="alert_modal" class="w3-modal" style="display:block">
         <div class="w3-modal-content w3-transparent">
             <div class="w3-container w3-center">
-                <img src="/RockPaperScissors/assets/warning.png" class="w3-image" style="max-height: 120px;">
+                <img src="https://acedev003.github.io/RockPaperScissors/assets/warning.png" class="w3-image" style="max-height: 120px;">
                 <div class="w3-text-white w3-xlarge">
                     Loading AI . .
                 </div>
@@ -55,14 +55,15 @@
     <div class="w3-row-padding">
 
         <div class="w3-container w3-half">
-            <div class="w3-card-2 w3-padding w3-margin" style="height: 320px;max-width:400px;float:right">
-                <video autoplay="true" id="cam_feed"></video>
+            <div class="w3-card-2 w3-padding w3-margin w3-center" style="height: 320px;max-width:400px;float:right">
+                <video autoplay="true" id="cam_feed" style="height: 224px;" class="w3-margin"></video>
+                <div><span id="cam_pred_state" class="w3-text-white"> - Prediction - </span></div>
             </div>
         </div>
 
         <div class="w3-container w3-half w3-center">
             <div class="w3-card-2 w3-margin" style="height: 320px;width:320px;float:left;display:flex;align-items: center;justify-content: center;">
-                    <img class="w3-image" id="comp_state_view" src="/RockPaperScissors/assets/bot.png" style="max-width: 320px;height:220px;margin:auto">
+                    <img class="w3-image" id="comp_state_view" src="https://acedev003.github.io/RockPaperScissors/assets/bot.png" style="max-width: 320px;height:220px;margin:auto">
             </div>
         </div>
         <div class="w3-row w3-center w3-xxlarge w3-text-white">
@@ -71,7 +72,7 @@
             <span id="computer_score">0</span>
         </div>
         <div class="w3-row w3-margin w3-padding w3-center w3-large w3-text-gray">
-            <button class="w3-button" id="start">Start</button>
+            <button class="w3-button" id="start">Play</button>
         </div>
     </div>
 </body>
@@ -88,6 +89,7 @@
     let rock         = document.getElementById('rock');
     let paper        = document.getElementById('paper');
     let scissors     = document.getElementById('scissors');
+    let cam_pred     = document.getElementById('cam_pred_state');
     
     let h_score_span   = document.getElementById('human_score');
     let c_score_span   = document.getElementById('computer_score');
@@ -120,7 +122,9 @@
                 delegate: "GPU"
             },
             runningMode: runningMode,
-            numHands: 1
+            numHands: 1,
+            minHandDetectionConfidence : 0.4,
+            minHandPresenceConfidence : 0.4
         });
         loading_warn.style.display = 'none';
     };
@@ -135,27 +139,30 @@
         let winner = null;
 
         let comp_image_map = [
-                                "/RockPaperScissors/assets/rock.png",
-                                "/RockPaperScissors/assets/paper.png",
-                                "/RockPaperScissors/assets/scissors.png",
+                                "https://acedev003.github.io/RockPaperScissors/assets/rock.png",
+                                "https://acedev003.github.io/RockPaperScissors/assets/paper.png",
+                                "https://acedev003.github.io/RockPaperScissors/assets/scissors.png",
                              ]
 
         document.getElementById('comp_state_view').src = comp_image_map[computer_choice];
 
         if (human_choice==rock_val)
         {
+            cam_pred.innerText = "Rock";
             if(computer_choice==rock_val)    winner = null;
             if(computer_choice==paper_val)   winner = "computer";
             if(computer_choice==scissor_val) winner = "human";
         }
         else if (human_choice==paper_val)
         {
+            cam_pred.innerText = "Paper";
             if(computer_choice==rock_val)    winner = "human";
             if(computer_choice==paper_val)   winner = null;
             if(computer_choice==scissor_val) winner = "computer";
         }
         else if (human_choice==scissor_val)
         {
+            cam_pred.innerText = "Scissors";
             if(computer_choice==rock_val)    winner = "computer";
             if(computer_choice==paper_val)   winner = "human"
             if(computer_choice==scissor_val) winner = null;
@@ -209,7 +216,8 @@
     let clicked = false;
     start.onclick = () => {
         if (clicked) {return}
-        document.getElementById('comp_state_view').src = "/RockPaperScissors/assets/bot.png";
+        cam_pred.innerText = " - Prediction -";
+        document.getElementById('comp_state_view').src = "https://acedev003.github.io/RockPaperScissors/assets/bot.png";
         setTimeout(() =>{
             rock.style.boxShadow = '0 2px 5px 0 rgba(121, 191, 36, 0.56), 0 2px 10px 0 rgba(121, 191, 36, 0.22)';
             clicked = true;
@@ -230,5 +238,4 @@
     };
 
 </script>
-
 </html>
